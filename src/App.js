@@ -1,23 +1,35 @@
-import logo from './logo.svg';
-import './App.css';
+import logo from "./logo.svg";
+import "./App.css";
+import RecipeForm from "./RecipeForm/RecipeForm";
+import RecipeList from "./RecipeList/RecipeList";
+import RecipePopup from "./RecipePopup/RecipePopup";
+import Navbar from "./Navbar/Navbar";
+import { useState } from "react";
+import { BrowserRouter, BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
 function App() {
+  const [selectedRecipe, setSelectedRecipe] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleRecipeClick = (recipe) => {
+    console.log(recipe);
+    setSelectedRecipe(recipe);
+    setIsModalOpen(true);
+  };
+
+  const handleClosePopup = () => {
+    setSelectedRecipe(null);
+    setIsModalOpen(false);
+  };
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Navbar />
+      <Routes>
+        <Route path="/" element={<RecipeForm></RecipeForm>}></Route>
+        <Route path="/recipeList" element={<RecipeList onRecipeClick={handleRecipeClick}/>}></Route>
+      </Routes>
+      <RecipePopup recipe={selectedRecipe} isOpen={isModalOpen} onClose={handleClosePopup}/>
     </div>
   );
 }

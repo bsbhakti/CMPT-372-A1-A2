@@ -1,0 +1,19 @@
+
+td {
+  background-color: lightgray;
+  padding: 10px; 
+  text-align: center; 
+}
+
+table {
+    margin-top: 10px;
+  margin: auto; 
+  width: 80%; 
+  max-width: 400px;
+}
+
+th {
+  background-color: #333;
+  color: white; 
+  padding: 10px; 
+}
