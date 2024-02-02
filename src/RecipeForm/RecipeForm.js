@@ -1,6 +1,7 @@
 import React from "react";
 import "./RecipeForm.css";
 import { useState } from "react";
+import { MdOutlineFoodBank } from "react-icons/md";
 
 const RecipeForm = () => {
   const initialData = {
@@ -34,7 +35,7 @@ const RecipeForm = () => {
           ...savedFormData,
           {
             ...formData,
-            recipeIngredients: formData.recipeIngredients.split(","),
+            recipeIngredients: formData.recipeIngredients.split("\n"),
             recipeDirections: formData.recipeDirections.split(","),
             date: date,
           },
@@ -65,7 +66,10 @@ const RecipeForm = () => {
   return (
     <div className="form-container">
       <form className="recipe-form" onSubmit={handleSubmit}>
+        <div className="heading">
+        <MdOutlineFoodBank size={35}/>
         <h1>New Recipe</h1>
+        </div>
 
         <div className="form-group">
           <label htmlFor="title">Recipe Name</label>
@@ -121,18 +125,19 @@ const RecipeForm = () => {
             onChange={handleChange}
           ></textarea>
         </div>
+        <div className="buttons">
+          <div className="form-group">
+            <input type="submit" className="submit-button" />
+          </div>
 
-        <div className="form-group">
-          <input type="submit" className="submit-button" />
-        </div>
-
-        <div className="form-group">
-          <input
-            type="button"
-            className="reset-button"
-            onClick={handleReset}
-            value="Reset"
-          />
+          <div className="form-group">
+            <input
+              type="button"
+              className="reset-button"
+              onClick={handleReset}
+              value="Reset"
+            />
+          </div>
         </div>
       </form>
     </div>
