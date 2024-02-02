@@ -11,7 +11,11 @@ const RecipePopup = ({ isOpen,recipe, onClose }) => {
       <div className="modal-content">
         <div className="header-container" onClick={onClose}>
           <FaTimes />
-          <h2>{recipe.recipeName}</h2>
+        </div>
+        <h2>{recipe.recipeName}</h2>
+        Modified on: {recipe.date}
+        <div className="list-header">
+          Cuisine: {recipe.cuisine}
         </div>
         <ol className="list-header">
           Ingredients:{" "}

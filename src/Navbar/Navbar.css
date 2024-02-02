@@ -1,7 +1,12 @@
 /* Navbar.css */
 nav {
-  background-color: #333;
+  background-color: #bed3b5;
   padding: 10px;
+}
+
+.navbar-text {
+  color: black;
+  font-weight:bold;
 }
 
 ul {

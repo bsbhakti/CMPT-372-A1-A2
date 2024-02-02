@@ -7,6 +7,8 @@ const RecipeForm = () => {
     recipeName: "",
     recipeIngredients: "",
     recipeDirections: "",
+    date: "",
+    cuisine: "",
   };
 
   const [formData, setFormData] = useState(initialData);
@@ -19,21 +21,46 @@ const RecipeForm = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    const savedFormData =
-      JSON.parse(localStorage.getItem("recipeFormData")) || [];
-    const ifExists = savedFormData.some(
-      (recipe) => recipe.recipeName === formData.recipeName
-    );
-    if (!ifExists) {
-      const updatedFormData = [...savedFormData, { ...formData,recipeIngredients: formData.recipeIngredients.split(','),recipeDirections: formData.recipeDirections.split(',') }];
-      localStorage.setItem("recipeFormData", JSON.stringify(updatedFormData));
-      handleReset();
+    if (validateForm()) {
+      const savedFormData =
+        JSON.parse(localStorage.getItem("recipeFormData")) || [];
+      const ifExists = savedFormData.some(
+        (recipe) => recipe.recipeName === formData.recipeName
+      );
+      if (!ifExists) {
+        let date = new Date().toLocaleString();
+        console.log(date);
+        const updatedFormData = [
+          ...savedFormData,
+          {
+            ...formData,
+            recipeIngredients: formData.recipeIngredients.split(","),
+            recipeDirections: formData.recipeDirections.split(","),
+            date: date,
+          },
+        ];
+        localStorage.setItem("recipeFormData", JSON.stringify(updatedFormData));
+        handleReset();
+      }
+    } else {
+      alert("Name, Ingredients and Directions cannot be empty");
     }
   };
   const handleReset = (event) => {
     setFormData(initialData);
     console.log(formData);
   };
+
+  function validateForm() {
+    if (
+      formData.recipeName.length === 0 ||
+      formData.recipeDirections.length === 0 ||
+      formData.recipeIngredients.length === 0
+    ) {
+      return false;
+    }
+    return true;
+  }
 
   return (
     <div className="form-container">
@@ -49,6 +76,30 @@ const RecipeForm = () => {
             value={formData.recipeName}
             onChange={handleChange}
           />
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="cuisine">Cuisine</label>
+          <select
+            id="cuisine"
+            name="cuisine"
+            value={formData.cuisine}
+            onChange={handleChange}
+          >
+            <option value="" selected disabled>
+              Select Cuisine
+            </option>
+            <option value="Italian">Italian</option>
+            <option value="Mexican">Mexican</option>
+            <option value="Chinese">Chinese</option>
+            <option value="Indian">Indian</option>
+            <option value="French">French</option>
+            <option value="Canadian">Canadian</option>
+            <option value="Turkish">Turkish</option>
+            <option value="Amerian">Amerian</option>
+            <option value="British">British</option>
+            <option value="Vietnamese">Vietnamese</option>
+          </select>
         </div>
 
         <div className="form-group">
