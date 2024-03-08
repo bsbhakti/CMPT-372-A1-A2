@@ -1,31 +1,60 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import './RecipeList.css';
-import { useState } from 'react';
-import { IoSearchSharp } from "react-icons/io5";
+import React from "react";
+import "./RecipeList.css";
+import { useState, useEffect } from "react";
+import axios from "axios";
 
-const RecipeList = ({onRecipeClick}) =>{ 
-   const [recipes, setRecipes] = useState(
-     JSON.parse(localStorage.getItem("recipeFormData")) || []
-   );
-   const [state, setState] = useState({
-     query: "",
-     list: recipes
-   })
+const RecipeList = ({ onRecipeClick, isModalOpen }) => {
+  const [recipes, setRecipes] = useState([]);
+  const [state, setState] = useState({
+    query: "",
+    list: recipes,
+  });
 
-   const handleQueryChange = (event) =>{
-     const results = recipes.filter(recipe => {
-       if(event.target.value === "") return recipes
-       return recipe.recipeName.toLowerCase().includes(event.target.value.toLowerCase())
-     })
+  const reloadRecipes = () => {
+    axios
+      .get("http://localhost:8080/getAllRecipes")
+      .then((response) => {
+        console.log("this is response", response.data);
+        setRecipes(response.data);
+        console.log(recipes);
+      })
+      .catch((err) => {
+        console.log("Error getting entries");
+        alert("Sorry cannot get entries");
+      });
+  };
 
-     setState({
-       query: event.target.value,
-       list: results})
+  useEffect(() => {
+    //Runs only on the first render
+    reloadRecipes()
+  }, []);
 
-     console.log(state.list);
+  useEffect(()=>{
+    reloadRecipes()
+  },[isModalOpen]);
 
-   } 
+  useEffect(() => {
+    setState({
+      list: recipes,
+    });
+    console.log(recipes);
+  }, [recipes]);
+
+  const handleQueryChange = (event) => {
+    const results = recipes.filter((recipe) => {
+      if (event.target.value === "") return recipes;
+      return recipe.recipeName
+        .toLowerCase()
+        .includes(event.target.value.toLowerCase());
+    });
+
+    setState({
+      query: event.target.value,
+      list: results,
+    });
+
+    console.log(state.list);
+  };
 
   return (
     <div>
@@ -49,11 +78,8 @@ const RecipeList = ({onRecipeClick}) =>{
             </thead>
             <tbody>
               {state.list.map((recipe) => (
-                <tr
-                  key={recipe.recipeName}
-                  onClick={() => onRecipeClick(recipe)}
-                >
-                  <td>{recipe.recipeName}</td>
+                <tr key={recipe.id} onClick={() => onRecipeClick(recipe)}>
+                  <td>{recipe.name}</td>
                 </tr>
               ))}
             </tbody>
@@ -74,7 +100,7 @@ const RecipeList = ({onRecipeClick}) =>{
         ))}
     </div>
   );
-        }
+};
 
 RecipeList.propTypes = {};
 

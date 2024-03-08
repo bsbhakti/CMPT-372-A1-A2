@@ -2,13 +2,13 @@ import React from "react";
 import "./RecipeForm.css";
 import { useState } from "react";
 import { MdOutlineFoodBank } from "react-icons/md";
+import axios from 'axios';
 
 const RecipeForm = () => {
   const initialData = {
     recipeName: "",
-    recipeIngredients: "",
-    recipeDirections: "",
-    date: "",
+    recipeIngredients: [""],
+    recipeDirections: [""],
     cuisine: "",
   };
 
@@ -16,36 +16,40 @@ const RecipeForm = () => {
 
   const handleChange = (event) => {
     const { name, value } = event.target;
-    setFormData((prevFormData) => ({ ...prevFormData, [name]: value }));
-    console.log(formData);
+    let updatedValue = value
+    if(name === "recipeIngredients" || name ==="recipeDirections"){
+      updatedValue = value.split(",").map((item) => item.trim(" "));
+    }
+    setFormData((prevFormData) => ({ ...prevFormData, [name]: updatedValue }));
+    // console.log(formData);
   };
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    if (validateForm()) {
-      const savedFormData =
-        JSON.parse(localStorage.getItem("recipeFormData")) || [];
-      const ifExists = savedFormData.some(
-        (recipe) => recipe.recipeName === formData.recipeName
-      ); 
-
-      // SubmitEvent()
-      if (!ifExists) {
+    if (validateForm()) { 
         let date = new Date().toLocaleString();
         console.log(date);
-        // const updatedFormData = [
-        //   ...savedFormData,
-        //   {
-        //     ...formData,
-        //     recipeIngredients: formData.recipeIngredients.split("\n"),
-        //     recipeDirections: formData.recipeDirections.split(","),
-        //     date: date,
-        //   },
-        // ];
-        // localStorage.setItem("recipeFormData", JSON.stringify(updatedFormData));
+        const data = {
+          form: formData,
+          date: date
+        }
+        axios.post("http://localhost:8080/submitForm", data)
+        .then(response => {
+          
+          console.log(response.data.status,"this is response");
+          if(response.data.status === 2){
+          alert("Successfully updated recipe!");
+
+          }
+          else {
+          alert("Successfully saved recipe!")
+          }
+        })
+        .catch(err =>{
+          alert("Sorry couldnt save recipe!")
+        })
 
         handleReset();
-      }
     } else {
       alert("Name, Ingredients and Directions cannot be empty");
     }
@@ -59,7 +63,8 @@ const RecipeForm = () => {
     if (
       formData.recipeName.length === 0 ||
       formData.recipeDirections.length === 0 ||
-      formData.recipeIngredients.length === 0
+      formData.recipeIngredients.length === 0 ||
+      formData.cuisine.length === 0
     ) {
       return false;
     }
@@ -70,8 +75,6 @@ const RecipeForm = () => {
     <div className="form-container">
       <form
         className="recipe-form"
-        action="http://localhost:8080/submitForm"
-        method="POST"
       >
         <div className="heading">
           <MdOutlineFoodBank size={35} />
@@ -154,7 +157,7 @@ const RecipeForm = () => {
         </div>
         <div className="buttons">
           <div className="form-group">
-            <input type="submit" className="submit-button" />
+            <input type="submit" className="submit-button" onClick={handleSubmit}/>
           </div>
 
           <div className="form-group">

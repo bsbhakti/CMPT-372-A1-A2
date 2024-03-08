@@ -1,4 +1,3 @@
-import logo from "./logo.svg";
 import "./App.css";
 import RecipeForm from "./RecipeForm/RecipeForm";
 import RecipeList from "./RecipeList/RecipeList";
@@ -12,7 +11,7 @@ function App() {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleRecipeClick = (recipe) => {
-    console.log(recipe);
+    console.log("look here", recipe);
     setSelectedRecipe(recipe);
     setIsModalOpen(true);
   };
@@ -27,7 +26,7 @@ function App() {
       <Navbar />
       <Routes>
         <Route path="/" element={<RecipeForm></RecipeForm>}></Route>
-        <Route path="/recipeList" element={<RecipeList onRecipeClick={handleRecipeClick}/>}></Route>
+        <Route path="/recipeList" element={<RecipeList onRecipeClick={handleRecipeClick} isModalOpen={isModalOpen}/>}></Route>
       </Routes>
       <RecipePopup recipe={selectedRecipe} isOpen={isModalOpen} onClose={handleClosePopup}/>
     </div>
