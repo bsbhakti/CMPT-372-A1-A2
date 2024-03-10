@@ -10,9 +10,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 var pool = new Pool({
   user: "postgres",
-  host: "localhost",
+  // host: "localhost",
+  host: "db",
   password: "4123",
-  database: "cmpt372_a2",
 });
 var port = 8080;
 
@@ -184,9 +184,13 @@ async function addRecipeIngredientsById(recipeId, ingredientId) {
   var addRecipeIngredients = `INSERT into recipeIngredients(recipeid, ingredientid) VALUES( $1,$2 )`;
   await pool.query(addRecipeIngredients, [recipeId, ingredientId]);
 }
-
+app.get("/",(req,res)=>{
+  res.send("success");
+})
 app.post("/submitForm", async (req, res, next) => {
-  console.log("creating", req.body.form);
+  console.log("im reaching")
+  
+  console.log("creating", req.body);
   console.log("creating", req.body.date);
 
   const createIngredients = `CREATE TABLE IF NOT EXISTS ingredients(id serial PRIMARY KEY , name VARCHAR(30))`;
@@ -318,6 +322,9 @@ app.delete("/deleteRecipe", async (req, res, next) => {
   }
 });
 
-app.listen(port, () => {
+// app.listen(port, () => {
+//   console.log(`server is listening on port ${port}`);
+// });
+
+app.listen(port, '0.0.0.0');
   console.log(`server is listening on port ${port}`);
-});
